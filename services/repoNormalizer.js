@@ -3,6 +3,7 @@ export function normalizeRepo(repo) {
     id: repo.id,
     name: repo.name,
     fullName: repo.full_name,
+    description: repo.description,
     stars: repo.stargazers_count,
     forks: repo.forks_count,
     issues: repo.open_issues_count,
