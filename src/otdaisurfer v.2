@@ -20,7 +20,21 @@ services/
 
 App.jsx
 
+let cache = null;
+let cacheTime = 0;
 
+export async function fetchReposCached() {
+  const now = Date.now();
+
+  if (cache && now - cacheTime < 60000) {
+    return cache;
+  }
+
+  cache = await fetchRepos();
+  cacheTime = now;
+
+  return cache;
+}
 import { useState, useRef } from "react";
 
 // ═══════════════════════════════════════════════
