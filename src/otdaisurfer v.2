@@ -1,0 +1,609 @@
+import { useState, useRef } from "react";
+
+// ═══════════════════════════════════════════════
+//  ALL 54 REPOS — HARDCODED FROM LIVE GITHUB API
+//  Floridadoll1313 · Fetched June 7 2026
+// ═══════════════════════════════════════════════
+const REPOS = [
+  { id:1, name:"AI-Surfer-Repos", description:"The Dashboard for all Repos", language:"JavaScript", stars:1, issues:0, forks:0, pushed:"2026-06-06", size:18, html_url:"https://github.com/Floridadoll1313/AI-Surfer-Repos", fork:false },
+  { id:2, name:"OTDAISURFER-", description:"Both site urls cool app", language:"TypeScript", stars:1, issues:0, forks:0, pushed:"2026-06-06", size:1060, html_url:"https://github.com/Floridadoll1313/OTDAISURFER-", fork:false },
+  { id:3, name:"Ocean-Tide-Drop-AI-SURFER-2", description:"Main OTD AI Surfer platform v2", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-06-06", size:5685, html_url:"https://github.com/Floridadoll1313/Ocean-Tide-Drop-AI-SURFER-2", fork:false },
+  { id:4, name:"gistpad", description:"", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-06-06", size:8982, html_url:"https://github.com/Floridadoll1313/gistpad", fork:true },
+  { id:5, name:"emoji-cheat-sheet", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-06", size:31824, html_url:"https://github.com/Floridadoll1313/emoji-cheat-sheet", fork:true },
+  { id:6, name:"A2UI", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-06", size:129719, html_url:"https://github.com/Floridadoll1313/A2UI", fork:true },
+  { id:7, name:"upm", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-05", size:31187, html_url:"https://github.com/Floridadoll1313/upm", fork:true },
+  { id:8, name:"mcp-server-cloudflare", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-04", size:4027, html_url:"https://github.com/Floridadoll1313/mcp-server-cloudflare", fork:true },
+  { id:9, name:"gemini-fullstack-langgraph-quickstart", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-04", size:437, html_url:"https://github.com/Floridadoll1313/gemini-fullstack-langgraph-quickstart", fork:true },
+  { id:10, name:"react-router-templates", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-04", size:2422, html_url:"https://github.com/Floridadoll1313/react-router-templates", fork:true },
+  { id:11, name:"AI-Surfer-Marketing-Agency-", description:"AI Marketing Agency platform", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-06-04", size:309, html_url:"https://github.com/Floridadoll1313/AI-Surfer-Marketing-Agency-", fork:false },
+  { id:12, name:"docker-agent", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-03", size:65823, html_url:"https://github.com/Floridadoll1313/docker-agent", fork:true },
+  { id:13, name:"gk-cli", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-03", size:7428, html_url:"https://github.com/Floridadoll1313/gk-cli", fork:true },
+  { id:14, name:"AISurfer", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-02", size:1, html_url:"https://github.com/Floridadoll1313/AISurfer", fork:false },
+  { id:15, name:"sentry-docs", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-02", size:678906, html_url:"https://github.com/Floridadoll1313/sentry-docs", fork:true },
+  { id:16, name:"js-sdk", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-06-01", size:22957, html_url:"https://github.com/Floridadoll1313/js-sdk", fork:true },
+  { id:17, name:"opencode", description:"", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-05-29", size:195582, html_url:"https://github.com/Floridadoll1313/opencode", fork:true },
+  { id:18, name:"jetpack", description:"", language:"PHP", stars:0, issues:0, forks:0, pushed:"2026-05-28", size:553298, html_url:"https://github.com/Floridadoll1313/jetpack", fork:true },
+  { id:19, name:"studio", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-05-28", size:44218, html_url:"https://github.com/Floridadoll1313/studio", fork:true },
+  { id:20, name:"wordpress-playground", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-05-28", size:12901577, html_url:"https://github.com/Floridadoll1313/wordpress-playground", fork:true },
+  { id:21, name:"toolkit", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-05-28", size:12192, html_url:"https://github.com/Floridadoll1313/toolkit", fork:true },
+  { id:22, name:"chrome-devtools-mcp", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-05-23", size:8413, html_url:"https://github.com/Floridadoll1313/chrome-devtools-mcp", fork:true },
+  { id:23, name:"Ocean-Tide-Drop-AI-SURFER-", description:"OTD AI Surfer v1", language:"JavaScript", stars:0, issues:0, forks:0, pushed:"2026-05-23", size:130, html_url:"https://github.com/Floridadoll1313/Ocean-Tide-Drop-AI-SURFER-", fork:false },
+  { id:24, name:"AI-Surfer-Marketing-Agency", description:"", language:"Python", stars:0, issues:0, forks:0, pushed:"2026-05-23", size:56706, html_url:"https://github.com/Floridadoll1313/AI-Surfer-Marketing-Agency", fork:true },
+  { id:25, name:"gemini-cli", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-05-23", size:72168, html_url:"https://github.com/Floridadoll1313/gemini-cli", fork:true },
+  { id:26, name:"AI-Surfer", description:"Core AI Surfer app", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-05-22", size:2558, html_url:"https://github.com/Floridadoll1313/AI-Surfer", fork:false },
+  { id:27, name:"Proxima", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-05-22", size:42518, html_url:"https://github.com/Floridadoll1313/Proxima", fork:true },
+  { id:28, name:"openai-cookbook", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-05-22", size:813790, html_url:"https://github.com/Floridadoll1313/openai-cookbook", fork:true },
+  { id:29, name:"vscode-python", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-05-21", size:172057, html_url:"https://github.com/Floridadoll1313/vscode-python", fork:true },
+  { id:30, name:".github", description:"", language:"JavaScript", stars:0, issues:0, forks:0, pushed:"2026-05-21", size:51509, html_url:"https://github.com/Floridadoll1313/.github", fork:false },
+  { id:31, name:"github-mcp-server", description:"", language:"Go", stars:0, issues:0, forks:0, pushed:"2026-05-20", size:32358, html_url:"https://github.com/Floridadoll1313/github-mcp-server", fork:true },
+  { id:32, name:"antigravity-sdk-python", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-05-20", size:898, html_url:"https://github.com/Floridadoll1313/antigravity-sdk-python", fork:true },
+  { id:33, name:"Hot-Island-Fun", description:"Hot Island Fun app", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-05-20", size:3262, html_url:"https://github.com/Floridadoll1313/Hot-Island-Fun", fork:false },
+  { id:34, name:"crispy-otd-site", description:"OTD crispy site", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-05-20", size:240, html_url:"https://github.com/Floridadoll1313/crispy-otd-site", fork:false },
+  { id:35, name:"vite-react-template", description:"Vite React starter", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-05-14", size:159, html_url:"https://github.com/Floridadoll1313/vite-react-template", fork:false },
+  { id:36, name:"Master-AI-Studio-Marketplace-Agency", description:"", language:"Python", stars:0, issues:0, forks:0, pushed:"2026-05-13", size:1665, html_url:"https://github.com/Floridadoll1313/Master-AI-Studio-Marketplace-Agency", fork:false },
+  { id:37, name:"agent-skills", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-04-30", size:806, html_url:"https://github.com/Floridadoll1313/agent-skills", fork:true },
+  { id:38, name:"oceantidedrop", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-04-25", size:0, html_url:"https://github.com/Floridadoll1313/oceantidedrop", fork:false },
+  { id:39, name:"vite-react", description:"", language:"CSS", stars:0, issues:0, forks:0, pushed:"2026-04-09", size:12, html_url:"https://github.com/Floridadoll1313/vite-react", fork:false },
+  { id:40, name:"Otdaisurferrealm", description:"OTD AI Surfer Realm", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-03-31", size:2712, html_url:"https://github.com/Floridadoll1313/Otdaisurferrealm", fork:false },
+  { id:41, name:"hatteras-island-obx-odyssey", description:"Hatteras Island OBX Odyssey game", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-03-26", size:1879, html_url:"https://github.com/Floridadoll1313/hatteras-island-obx-odyssey", fork:false },
+  { id:42, name:"AI-Surfer-Survivor-", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-03-26", size:1, html_url:"https://github.com/Floridadoll1313/AI-Surfer-Survivor-", fork:false },
+  { id:43, name:"my-cool-repo", description:"", language:"JavaScript", stars:0, issues:0, forks:0, pushed:"2026-03-26", size:105450, html_url:"https://github.com/Floridadoll1313/my-cool-repo", fork:true },
+  { id:44, name:"Hatteras-Island", description:"Hatteras Island project", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-03-26", size:818, html_url:"https://github.com/Floridadoll1313/Hatteras-Island", fork:false },
+  { id:45, name:"website", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-03-20", size:3927, html_url:"https://github.com/Floridadoll1313/website", fork:true },
+  { id:46, name:"AI-Surfer-Survivor-Server", description:"", language:"JavaScript", stars:0, issues:0, forks:0, pushed:"2026-03-01", size:3, html_url:"https://github.com/Floridadoll1313/AI-Surfer-Survivor-Server", fork:false },
+  { id:47, name:"playground-tools", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-02-26", size:432379, html_url:"https://github.com/Floridadoll1313/playground-tools", fork:true },
+  { id:48, name:"supabase-grafana", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-02-23", size:1689, html_url:"https://github.com/Floridadoll1313/supabase-grafana", fork:true },
+  { id:49, name:"jekyll-remote-theme", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-01-19", size:17071, html_url:"https://github.com/Floridadoll1313/jekyll-remote-theme", fork:true },
+  { id:50, name:"gistpad-mcp", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-01-16", size:189, html_url:"https://github.com/Floridadoll1313/gistpad-mcp", fork:true },
+  { id:51, name:"stripe-ruby", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2026-01-02", size:57805, html_url:"https://github.com/Floridadoll1313/stripe-ruby", fork:true },
+  { id:52, name:"aistudio-repository-template", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2025-08-12", size:3, html_url:"https://github.com/Floridadoll1313/aistudio-repository-template", fork:true },
+  { id:53, name:"hint", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2024-11-01", size:74562, html_url:"https://github.com/Floridadoll1313/hint", fork:true },
+  { id:54, name:"vscode-icons-js", description:"", language:"N/A", stars:0, issues:0, forks:0, pushed:"2021-09-30", size:271, html_url:"https://github.com/Floridadoll1313/vscode-icons-js", fork:true },
+];
+
+// OTD-owned repos (not forks)
+const OTD_REPOS = REPOS.filter(r => !r.fork);
+
+const LANG_COLORS = {
+  TypeScript:"#3178c6", JavaScript:"#f7df1e", Python:"#3572A5",
+  PHP:"#777bb3", Go:"#00ADD8", CSS:"#563d7c", "N/A":"#444"
+};
+
+function Stars() {
+  const s = useRef(Array.from({length:50},(_,i)=>({
+    id:i, w:Math.random()*2+1,
+    top:Math.random()*70, left:Math.random()*100,
+    dur:Math.random()*3+2, delay:Math.random()*4,
+    blue:Math.random()>0.6
+  }))).current;
+  return (
+    <div style={{position:"fixed",inset:0,zIndex:0,overflow:"hidden",
+      background:"linear-gradient(180deg,#00000f 0%,#000a1a 50%,#001020 100%)"}}>
+      {s.map(x=>(
+        <div key={x.id} style={{position:"absolute",
+          width:x.w+"px",height:x.w+"px",borderRadius:"50%",
+          background:x.blue?"rgba(100,220,255,0.9)":"rgba(255,255,255,0.8)",
+          top:x.top+"%",left:x.left+"%",
+          animation:`tw ${x.dur}s ease-in-out ${x.delay}s infinite`}}/>
+      ))}
+      <div style={{position:"absolute",inset:0,
+        backgroundImage:"linear-gradient(rgba(0,200,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,255,0.03) 1px,transparent 1px)",
+        backgroundSize:"60px 60px"}}/>
+    </div>
+  );
+}
+
+function Neon({c="#00d4ff",s="1rem",w="700",children,style={}}) {
+  return <span style={{fontFamily:"'Orbitron',monospace",fontSize:s,fontWeight:w,color:c,
+    textShadow:`0 0 10px ${c},0 0 25px ${c}60`,letterSpacing:"0.05em",...style}}>{children}</span>;
+}
+
+function Card({children,style={},glow=false}) {
+  const [h,setH]=useState(false);
+  return (
+    <div onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)}
+      style={{background:h||glow?"rgba(0,212,255,0.07)":"rgba(0,8,22,0.8)",
+        border:`1px solid ${h||glow?"rgba(0,212,255,0.45)":"rgba(0,212,255,0.12)"}`,
+        borderRadius:"10px",backdropFilter:"blur(14px)",
+        transition:"all 0.25s",
+        boxShadow:h?"0 0 24px rgba(0,212,255,0.12)":"0 2px 16px rgba(0,0,0,0.6)",...style}}>
+      {children}
+    </div>
+  );
+}
+
+function LangDot({lang}) {
+  return (
+    <span style={{display:"inline-flex",alignItems:"center",gap:"5px",
+      fontFamily:"monospace",fontSize:"0.62rem",color:"rgba(180,230,255,0.8)"}}>
+      <span style={{width:"8px",height:"8px",borderRadius:"50%",flexShrink:0,
+        background:LANG_COLORS[lang]||"#555",
+        boxShadow:`0 0 6px ${LANG_COLORS[lang]||"#555"}`}}/>
+      {lang}
+    </span>
+  );
+}
+
+function Sidebar({nav,setNav}) {
+  const items=[
+    {id:"dashboard",icon:"🌊",label:"DASHBOARD"},
+    {id:"repos",icon:"📦",label:"MY REPOS"},
+    {id:"forks",icon:"🔀",label:"FORKS"},
+    {id:"agents",icon:"🤖",label:"AI AGENTS"},
+    {id:"activity",icon:"⚡",label:"ACTIVITY"},
+    {id:"crew",icon:"👥",label:"CREW"},
+  ];
+  return (
+    <div style={{width:"185px",flexShrink:0,padding:"16px 10px",
+      borderRight:"1px solid rgba(0,212,255,0.1)",
+      display:"flex",flexDirection:"column",gap:"3px",overflowY:"auto"}}>
+      <div style={{textAlign:"center",padding:"12px 0 18px",
+        borderBottom:"1px solid rgba(0,212,255,0.1)",marginBottom:"10px"}}>
+        <div style={{fontSize:"1.7rem",marginBottom:"5px"}}>🌊</div>
+        <Neon c="#00d4ff" s="0.56rem" style={{display:"block",letterSpacing:"0.14em"}}>OCEAN TIDE DROP</Neon>
+        <div style={{fontFamily:"monospace",fontSize:"0.45rem",color:"rgba(0,212,255,0.4)",
+          marginTop:"3px",letterSpacing:"0.1em"}}>AI SURFER CONSOLE</div>
+        <div style={{fontFamily:"monospace",fontSize:"0.45rem",color:"rgba(0,212,255,0.3)",marginTop:"6px"}}>
+          Floridadoll1313 · 54 repos
+        </div>
+      </div>
+      {items.map(({id,icon,label})=>(
+        <button key={id} onClick={()=>setNav(id)} style={{
+          display:"flex",alignItems:"center",gap:"8px",
+          padding:"9px 11px",borderRadius:"7px",
+          background:nav===id?"rgba(0,212,255,0.13)":"transparent",
+          border:nav===id?"1px solid rgba(0,212,255,0.35)":"1px solid transparent",
+          color:nav===id?"#00d4ff":"rgba(140,190,255,0.45)",
+          fontFamily:"'Orbitron',monospace",fontSize:"0.53rem",fontWeight:"700",
+          letterSpacing:"0.08em",cursor:"pointer",textAlign:"left",transition:"all 0.2s",
+          textShadow:nav===id?"0 0 8px #00d4ff":"none"}}>
+          <span>{icon}</span><span style={{flex:1}}>{label}</span>
+          {nav===id&&<span style={{color:"#00d4ff",fontSize:"0.5rem"}}>▶</span>}
+        </button>
+      ))}
+      <div style={{marginTop:"auto",padding:"10px 8px",
+        borderTop:"1px solid rgba(0,212,255,0.08)",textAlign:"center"}}>
+        <div style={{fontSize:"0.85rem",marginBottom:"3px"}}>🕯️</div>
+        <div style={{fontFamily:"monospace",fontSize:"0.43rem",
+          color:"rgba(100,160,200,0.55)",lineHeight:1.6}}>
+          In memory of<br/>
+          <span style={{color:"rgba(0,212,255,0.75)"}}>Johnny "Bull" Hooper</span><br/>
+          Salvo, NC
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RepoCard({repo,onAnalyze,analyzing,result,onClose}) {
+  const daysAgo = Math.floor((Date.now()-new Date(repo.pushed+"T00:00:00Z"))/(86400000));
+  const activity = daysAgo===0?"today":daysAgo===1?"yesterday":`${daysAgo}d ago`;
+  const scoreMatch = result?.match(/(\d{1,3})%/);
+  const score = scoreMatch?parseInt(scoreMatch[1]):null;
+  const sc = score>=80?"#00ff88":score>=60?"#ffaa00":"#ff3366";
+
+  return (
+    <div style={{marginBottom:"10px"}}>
+      <Card style={{padding:"16px 18px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:"10px"}}>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"6px",flexWrap:"wrap"}}>
+              <Neon c="#00d4ff" s="0.88rem">{repo.name}</Neon>
+              {repo.fork&&<span style={{fontFamily:"monospace",fontSize:"0.5rem",
+                color:"rgba(150,150,255,0.6)",border:"1px solid rgba(150,150,255,0.2)",
+                borderRadius:"4px",padding:"1px 5px"}}>FORK</span>}
+              <span style={{fontFamily:"monospace",fontSize:"0.5rem",color:"#00ff88",
+                textShadow:"0 0 8px #00ff88"}}>● LIVE</span>
+            </div>
+            {repo.description&&(
+              <div style={{fontFamily:"monospace",fontSize:"0.68rem",
+                color:"rgba(160,210,255,0.65)",marginBottom:"8px",lineHeight:1.4}}>
+                {repo.description.slice(0,100)}{repo.description.length>100?"…":""}
+              </div>
+            )}
+            <div style={{display:"flex",gap:"14px",alignItems:"center",flexWrap:"wrap"}}>
+              <LangDot lang={repo.language}/>
+              <span style={{fontFamily:"monospace",fontSize:"0.62rem",color:"rgba(150,200,255,0.7)"}}>
+                ⭐ {repo.stars}
+              </span>
+              <span style={{fontFamily:"monospace",fontSize:"0.62rem",color:"rgba(150,200,255,0.7)"}}>
+                🐛 {repo.issues}
+              </span>
+              <span style={{fontFamily:"monospace",fontSize:"0.62rem",color:"rgba(150,200,255,0.7)"}}>
+                🕐 {activity}
+              </span>
+              <span style={{fontFamily:"monospace",fontSize:"0.6rem",color:"rgba(100,150,200,0.5)"}}>
+                {repo.size>=1000?(repo.size/1000).toFixed(1)+"MB":repo.size+"KB"}
+              </span>
+            </div>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:"6px",flexShrink:0}}>
+            {score!==null&&(
+              <div style={{textAlign:"center",marginBottom:"2px"}}>
+                <div style={{fontFamily:"'Orbitron',monospace",fontSize:"1.1rem",
+                  fontWeight:"900",color:sc,textShadow:`0 0 16px ${sc}`}}>{score}%</div>
+                <div style={{fontFamily:"monospace",fontSize:"0.45rem",color:"rgba(255,255,255,0.35)"}}>HEALTH</div>
+              </div>
+            )}
+            <button onClick={()=>onAnalyze(repo)} disabled={analyzing}
+              style={{fontFamily:"'Orbitron',monospace",fontSize:"0.52rem",fontWeight:"700",
+                color:analyzing?"#ffaa00":"#00d4ff",background:"transparent",
+                border:`1px solid ${analyzing?"rgba(255,170,0,0.5)":"rgba(0,212,255,0.5)"}`,
+                borderRadius:"6px",padding:"5px 9px",cursor:analyzing?"wait":"pointer",
+                textShadow:analyzing?"0 0 8px #ffaa00":"0 0 8px #00d4ff",whiteSpace:"nowrap"}}>
+              {analyzing?"⟳ SCANNING":"⚡ ANALYZE"}
+            </button>
+            <a href={repo.html_url} target="_blank" rel="noopener noreferrer"
+              style={{fontFamily:"'Orbitron',monospace",fontSize:"0.52rem",fontWeight:"700",
+                color:"#666",background:"transparent",
+                border:"1px solid rgba(100,100,100,0.35)",borderRadius:"6px",
+                padding:"5px 9px",textDecoration:"none",textAlign:"center"}}>
+              ↗ GITHUB
+            </a>
+            {result&&(
+              <button onClick={onClose}
+                style={{fontFamily:"monospace",fontSize:"0.52rem",color:"#ff5566",
+                  background:"transparent",border:"1px solid rgba(255,50,80,0.3)",
+                  borderRadius:"6px",padding:"5px 9px",cursor:"pointer"}}>
+                ✕ CLEAR
+              </button>
+            )}
+          </div>
+        </div>
+      </Card>
+
+      {result&&(
+        <Card glow style={{padding:"18px",marginTop:"6px",borderColor:"rgba(0,255,136,0.25)"}}>
+          <Neon c="#00ff88" s="0.6rem">⚡ WAVE REPORT · {repo.name.toUpperCase()}</Neon>
+          <div style={{fontFamily:"'Courier New',monospace",fontSize:"0.72rem",
+            lineHeight:1.75,color:"rgba(180,230,255,0.9)",whiteSpace:"pre-wrap",
+            marginTop:"12px",borderTop:"1px solid rgba(0,212,255,0.12)",paddingTop:"12px"}}>
+            {result}
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function Dashboard({repos}) {
+  const own = repos.filter(r=>!r.fork);
+  const forks = repos.filter(r=>r.fork);
+  const langs={};
+  own.forEach(r=>{if(r.language&&r.language!=="N/A") langs[r.language]=(langs[r.language]||0)+1;});
+  const topLangs=Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0,6);
+
+  return (
+    <div>
+      <div style={{marginBottom:"22px"}}>
+        <Neon c="#00d4ff" s="1.3rem">COMMAND BRIDGE</Neon>
+        <div style={{fontFamily:"monospace",fontSize:"0.62rem",
+          color:"rgba(0,212,255,0.45)",marginTop:"4px"}}>
+          Floridadoll1313 · Hatteras Island, NC · {new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}
+        </div>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:"10px",marginBottom:"20px"}}>
+        {[
+          {label:"TOTAL REPOS",val:repos.length,c:"#00d4ff",icon:"📦"},
+          {label:"OTD ORIGINALS",val:own.length,c:"#00ff88",icon:"🌊"},
+          {label:"FORKS",val:forks.length,c:"#ffaa00",icon:"🔀"},
+          {label:"TypeScript",val:own.filter(r=>r.language==="TypeScript").length,c:"#3178c6",icon:"⚡"},
+        ].map(({label,val,c,icon})=>(
+          <Card key={label} style={{padding:"16px",textAlign:"center"}}>
+            <div style={{fontSize:"1.2rem",marginBottom:"6px"}}>{icon}</div>
+            <div style={{fontFamily:"'Orbitron',monospace",fontSize:"1.5rem",
+              fontWeight:"900",color:c,textShadow:`0 0 18px ${c}`}}>{val}</div>
+            <div style={{fontFamily:"monospace",fontSize:"0.5rem",
+              color:"rgba(255,255,255,0.35)",marginTop:"3px",letterSpacing:"0.1em"}}>{label}</div>
+          </Card>
+        ))}
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
+        <Card style={{padding:"18px"}}>
+          <Neon c="#00d4ff" s="0.58rem" style={{display:"block",marginBottom:"12px",letterSpacing:"0.12em"}}>
+            🔥 TOP OTD REPOS
+          </Neon>
+          {own.slice(0,6).map((r,i)=>(
+            <div key={r.id} style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"8px"}}>
+              <span style={{fontFamily:"monospace",fontSize:"0.55rem",color:"rgba(0,212,255,0.4)",width:"16px"}}>{i+1}</span>
+              <span style={{fontFamily:"monospace",fontSize:"0.65rem",color:"rgba(180,220,255,0.85)",flex:1,
+                overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.name}</span>
+              <LangDot lang={r.language}/>
+            </div>
+          ))}
+        </Card>
+        <Card style={{padding:"18px"}}>
+          <Neon c="#00ff88" s="0.58rem" style={{display:"block",marginBottom:"12px",letterSpacing:"0.12em"}}>
+            💻 LANGUAGE STACK
+          </Neon>
+          {topLangs.map(([lang,count])=>(
+            <div key={lang} style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"8px"}}>
+              <span style={{fontFamily:"monospace",fontSize:"0.62rem",color:"rgba(180,230,255,0.8)",width:"80px"}}>{lang}</span>
+              <div style={{flex:1,height:"4px",background:"rgba(0,212,255,0.08)",borderRadius:"2px",overflow:"hidden"}}>
+                <div style={{height:"100%",borderRadius:"2px",
+                  background:`linear-gradient(90deg,${LANG_COLORS[lang]||"#00d4ff"},#00ff88)`,
+                  width:`${(count/own.length)*100}%`,transition:"width 0.5s"}}/>
+              </div>
+              <span style={{fontFamily:"monospace",fontSize:"0.58rem",color:"rgba(0,212,255,0.6)",width:"20px",textAlign:"right"}}>{count}</span>
+            </div>
+          ))}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [nav,setNav]=useState("dashboard");
+  const [analysis,setAnalysis]=useState({});
+  const [analyzing,setAnalyzing]=useState(null);
+  const [search,setSearch]=useState("");
+  const [sort,setSort]=useState("pushed");
+  const [filter,setFilter]=useState("all");
+
+  async function analyze(repo) {
+    setAnalyzing(repo.name);
+    try {
+      const prompt=`You are OTD AI Surfer — technical advisor for Ocean Tide Drop (otdaisurfer.surf), a Cloudflare-deployed React/Vite/TypeScript platform by Floridadoll1313, Hatteras Island NC.
+
+Deliver a WAVE REPORT for this GitHub repository:
+
+Name: ${repo.name}
+Description: ${repo.description||"None"}
+Language: ${repo.language}
+Stars: ${repo.stars} | Issues: ${repo.issues} | Forks: ${repo.forks}
+Last Push: ${repo.pushed}
+Size: ${repo.size>=1000?(repo.size/1000).toFixed(1)+"MB":repo.size+"KB"}
+Is Fork: ${repo.fork}
+
+Format:
+
+🌊 HEALTH SCORE: X%
+
+📡 SIGNAL READ:
+(what this repo is — 2 sentences max)
+
+✅ STRONG CURRENTS:
+• strength 1
+• strength 2
+
+⚠️ RIP CURRENTS:
+• risk 1
+• risk 2
+
+🚀 NEXT WAVE:
+• action 1
+• action 2
+
+🤙 SURFER'S NOTE:
+(one punchy ocean-coded hype line for the builder)
+
+Be sharp and technical. Don't invent code details you can't know from the metadata.`;
+
+      const res=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+          messages:[{role:"user",content:prompt}]})
+      });
+      const data=await res.json();
+      const text=data.content?.map(b=>b.text||"").join("")||"No response.";
+      setAnalysis(p=>({...p,[repo.name]:text}));
+    } catch(e) {
+      setAnalysis(p=>({...p,[repo.name]:`⚠️ Error: ${e.message}`}));
+    } finally { setAnalyzing(null); }
+  }
+
+  const ownRepos = REPOS.filter(r=>!r.fork);
+  const forkRepos = REPOS.filter(r=>r.fork);
+
+  const filterAndSort = (list) => list
+    .filter(r=> {
+      const q=search.toLowerCase();
+      return r.name.toLowerCase().includes(q)||r.description.toLowerCase().includes(q)||r.language.toLowerCase().includes(q);
+    })
+    .filter(r=> filter==="all"||r.language===filter)
+    .sort((a,b)=>{
+      if(sort==="name") return a.name.localeCompare(b.name);
+      if(sort==="size") return b.size-a.size;
+      if(sort==="stars") return b.stars-a.stars;
+      return new Date(b.pushed)-new Date(a.pushed);
+    });
+
+  const langs=[...new Set(ownRepos.map(r=>r.language))].filter(l=>l!=="N/A").sort();
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0;}
+        @keyframes tw{0%,100%{opacity:0.25;transform:scale(1);}50%{opacity:1;transform:scale(1.5);}}
+        @keyframes si{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+        ::-webkit-scrollbar{width:4px;}
+        ::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.25);border-radius:2px;}
+      `}</style>
+      <Stars/>
+      <div style={{position:"fixed",inset:0,zIndex:1,pointerEvents:"none",
+        backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px)"}}/>
+
+      <div style={{position:"relative",zIndex:2,height:"100vh",display:"flex",flexDirection:"column"}}>
+        {/* Top bar */}
+        <div style={{borderBottom:"1px solid rgba(0,212,255,0.1)",
+          padding:"7px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",
+          background:"rgba(0,4,14,0.8)",backdropFilter:"blur(16px)",flexShrink:0}}>
+          <Neon c="#00d4ff" s="0.52rem" style={{letterSpacing:"0.18em"}}>◈ OTD AI SURFER COMMAND CENTER ◈</Neon>
+          <div style={{display:"flex",gap:"16px",alignItems:"center"}}>
+            <div style={{fontFamily:"monospace",fontSize:"0.55rem",color:"rgba(0,212,255,0.4)"}}>
+              54 repos loaded · hardcoded · AI analysis live
+            </div>
+            <div style={{fontFamily:"monospace",fontSize:"0.55rem",color:"#00ff88",
+              textShadow:"0 0 8px #00ff88"}}>● ONLINE</div>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+          <Sidebar nav={nav} setNav={setNav}/>
+
+          <div style={{flex:1,padding:"20px 24px",overflowY:"auto"}}>
+
+            {nav==="dashboard"&&(
+              <div style={{animation:"si 0.35s ease"}}><Dashboard repos={REPOS}/></div>
+            )}
+
+            {(nav==="repos"||nav==="forks")&&(
+              <div style={{animation:"si 0.35s ease"}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",
+                  marginBottom:"16px",flexWrap:"wrap",gap:"10px"}}>
+                  <div>
+                    <Neon c="#00d4ff" s="1.1rem">{nav==="repos"?"OTD REPOSITORIES":"FORKED REPOS"}</Neon>
+                    <div style={{fontFamily:"monospace",fontSize:"0.58rem",
+                      color:"rgba(0,212,255,0.4)",marginTop:"3px"}}>
+                      {nav==="repos"?`${filterAndSort(ownRepos).length} of ${ownRepos.length} originals`
+                        :`${filterAndSort(forkRepos).length} of ${forkRepos.length} forks`}
+                    </div>
+                  </div>
+                  <div style={{display:"flex",gap:"7px",flexWrap:"wrap"}}>
+                    <input placeholder="🔍 Search..." value={search} onChange={e=>setSearch(e.target.value)}
+                      style={{fontFamily:"monospace",fontSize:"0.62rem",
+                        background:"rgba(0,15,35,0.9)",border:"1px solid rgba(0,212,255,0.2)",
+                        color:"#aad4ff",borderRadius:"7px",padding:"6px 11px",width:"150px",outline:"none"}}/>
+                    {nav==="repos"&&(
+                      <select value={filter} onChange={e=>setFilter(e.target.value)}
+                        style={{fontFamily:"monospace",fontSize:"0.58rem",
+                          background:"rgba(0,15,35,0.9)",border:"1px solid rgba(0,212,255,0.2)",
+                          color:"#aad4ff",borderRadius:"7px",padding:"6px 9px",outline:"none",cursor:"pointer"}}>
+                        <option value="all">All Languages</option>
+                        {langs.map(l=><option key={l} value={l}>{l}</option>)}
+                      </select>
+                    )}
+                    <select value={sort} onChange={e=>setSort(e.target.value)}
+                      style={{fontFamily:"monospace",fontSize:"0.58rem",
+                        background:"rgba(0,15,35,0.9)",border:"1px solid rgba(0,212,255,0.2)",
+                        color:"#aad4ff",borderRadius:"7px",padding:"6px 9px",outline:"none",cursor:"pointer"}}>
+                      <option value="pushed">Recent</option>
+                      <option value="name">Name</option>
+                      <option value="size">Size</option>
+                      <option value="stars">Stars</option>
+                    </select>
+                  </div>
+                </div>
+
+                {filterAndSort(nav==="repos"?ownRepos:forkRepos).map(repo=>(
+                  <RepoCard key={repo.id} repo={repo}
+                    onAnalyze={analyze}
+                    analyzing={analyzing===repo.name}
+                    result={analysis[repo.name]}
+                    onClose={()=>setAnalysis(p=>{const n={...p};delete n[repo.name];return n;})}/>
+                ))}
+              </div>
+            )}
+
+            {nav==="agents"&&(
+              <div style={{animation:"si 0.35s ease"}}>
+                <Neon c="#00d4ff" s="1.1rem">AI AGENT NETWORK</Neon>
+                <div style={{fontFamily:"monospace",fontSize:"0.58rem",
+                  color:"rgba(0,212,255,0.4)",marginTop:"3px",marginBottom:"18px"}}>
+                  OTD Autonomous Intelligence Layer
+                </div>
+                {[
+                  {name:"WAVE ANALYST",icon:"🌊",desc:"GitHub repo health scoring & AI code review",status:"ACTIVE",c:"#00ff88",power:"Claude Sonnet 4"},
+                  {name:"DEPLOY SCOUT",icon:"🚀",desc:"Cloudflare Workers deployment monitoring",status:"ACTIVE",c:"#00ff88",power:"Cloudflare API"},
+                  {name:"SAND DOLLAR ORACLE",icon:"🪙",desc:"Stripe payment & membership analytics",status:"PENDING",c:"#ffaa00",power:"Stripe API"},
+                  {name:"NEURAL NEXUS",icon:"🧠",desc:"AI learning path recommendations",status:"PENDING",c:"#ffaa00",power:"Claude + Supabase"},
+                  {name:"HATTERAS HERALD",icon:"📡",desc:"Social media & content automation",status:"BUILDING",c:"#ff6644",power:"Zapier MCP"},
+                ].map(a=>(
+                  <Card key={a.name} style={{padding:"18px",marginBottom:"10px"}}>
+                    <div style={{display:"flex",gap:"14px",alignItems:"center"}}>
+                      <div style={{fontSize:"1.8rem"}}>{a.icon}</div>
+                      <div style={{flex:1}}>
+                        <div style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"5px"}}>
+                          <Neon c={a.c} s="0.78rem">{a.name}</Neon>
+                          <span style={{fontFamily:"monospace",fontSize:"0.5rem",color:a.c,
+                            border:`1px solid ${a.c}40`,borderRadius:"4px",padding:"1px 6px",
+                            textShadow:`0 0 8px ${a.c}`}}>● {a.status}</span>
+                        </div>
+                        <div style={{fontFamily:"monospace",fontSize:"0.63rem",
+                          color:"rgba(180,230,255,0.65)",marginBottom:"3px"}}>{a.desc}</div>
+                        <div style={{fontFamily:"monospace",fontSize:"0.55rem",
+                          color:"rgba(0,212,255,0.4)"}}>⚡ {a.power}</div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {nav==="activity"&&(
+              <div style={{animation:"si 0.35s ease"}}>
+                <Neon c="#00d4ff" s="1.1rem">ACTIVITY TIMELINE</Neon>
+                <div style={{fontFamily:"monospace",fontSize:"0.58rem",
+                  color:"rgba(0,212,255,0.4)",marginTop:"3px",marginBottom:"18px"}}>
+                  Push timeline · all repos · Floridadoll1313
+                </div>
+                {REPOS.slice(0,20).map((repo,i)=>(
+                  <div key={repo.id} style={{display:"flex",gap:"12px",alignItems:"flex-start",
+                    paddingBottom:"12px",marginBottom:"12px",
+                    borderBottom:"1px solid rgba(0,212,255,0.06)"}}>
+                    <div style={{width:"2px",minHeight:"28px",borderRadius:"1px",
+                      background:i<3?"rgba(0,212,255,0.6)":"rgba(0,212,255,0.1)",
+                      alignSelf:"stretch"}}/>
+                    <div style={{flex:1}}>
+                      <div style={{display:"flex",gap:"8px",alignItems:"center",marginBottom:"2px",flexWrap:"wrap"}}>
+                        <span style={{fontFamily:"'Orbitron',monospace",fontSize:"0.65rem",
+                          color:i===0?"#00d4ff":"rgba(150,200,255,0.75)"}}>{repo.name}</span>
+                        <LangDot lang={repo.language}/>
+                        {repo.fork&&<span style={{fontFamily:"monospace",fontSize:"0.48rem",
+                          color:"rgba(150,150,255,0.5)"}}>fork</span>}
+                        {i===0&&<span style={{fontFamily:"monospace",fontSize:"0.48rem",color:"#ffcc00"}}>← LATEST</span>}
+                      </div>
+                      <div style={{fontFamily:"monospace",fontSize:"0.56rem",
+                        color:"rgba(100,160,200,0.5)"}}>
+                        Pushed {repo.pushed} · {repo.size>=1000?(repo.size/1000).toFixed(1)+"MB":repo.size+"KB"}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {nav==="crew"&&(
+              <div style={{animation:"si 0.35s ease"}}>
+                <Neon c="#00d4ff" s="1.1rem">THE CREW</Neon>
+                <div style={{fontFamily:"monospace",fontSize:"0.58rem",
+                  color:"rgba(0,212,255,0.4)",marginTop:"3px",marginBottom:"18px"}}>
+                  OTD Core Team · Hatteras Island, NC
+                </div>
+                {[
+                  {name:"Floridadoll1313",role:"Creative Architect & Realmwalker",
+                    icon:"👁️",note:"Founder · Engineer · Navigator of Digital Worlds · otdaisurfer.surf",c:"#00d4ff"},
+                  {name:"Marlin",role:"Co-Founder & Chief Vibe Officer",
+                    icon:"🐕",note:"Chihuahua · Certified Good Boy · Emotional Anchor of the Operation",c:"#ffcc00"},
+                  {name:'Johnny "Bull" Hooper',role:"Guardian Spirit of the Platform",
+                    icon:"🌊",note:"Salvo, NC · In memoriam · Eternal tide, always in the current with us",
+                    c:"rgba(150,200,255,0.75)"},
+                ].map(m=>(
+                  <Card key={m.name} style={{padding:"20px",marginBottom:"10px"}}>
+                    <div style={{display:"flex",gap:"14px",alignItems:"center"}}>
+                      <div style={{fontSize:"2rem"}}>{m.icon}</div>
+                      <div>
+                        <Neon c={m.c} s="0.85rem" style={{display:"block",marginBottom:"4px"}}>{m.name}</Neon>
+                        <div style={{fontFamily:"'Orbitron',monospace",fontSize:"0.56rem",
+                          color:"rgba(0,212,255,0.65)",marginBottom:"4px"}}>{m.role}</div>
+                        <div style={{fontFamily:"monospace",fontSize:"0.6rem",
+                          color:"rgba(140,190,255,0.45)",lineHeight:1.5}}>{m.note}</div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
