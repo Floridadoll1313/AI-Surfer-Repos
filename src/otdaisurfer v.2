@@ -40,11 +40,14 @@ import { useState, useRef } from "react";
 // ═══════════════════════════════════════════════
 //  ALL 54 REPOS — HARDCODED FROM LIVE GITHUB API
 //  Floridadoll1313 · Fetched June 7 2026
-// ═══════════════════════════════════════════════
-useEffect(() => {
-  fetchReposCached().then(setRepos);
-}, []);
+// ════════════════════════════import { useEffect, useState } from "react";
+import { fetchRepos } from "./services/githubService";
+import { normalizeRepo } from "./services/repoNormalizer";
+import { analyzeRepo } from "./services/aiAnalyzer";
+
 const [repos, setRepos] = useState([]);
+const [loading, setLoading] = useState(true);
+const [analysis, setAnalysis] = useState({});
   { id:1, name:"AI-Surfer-Repos", description:"The Dashboard for all Repos", language:"JavaScript", stars:1, issues:0, forks:0, pushed:"2026-06-06", size:18, html_url:"https://github.com/Floridadoll1313/AI-Surfer-Repos", fork:false },
   { id:2, name:"OTDAISURFER-", description:"Both site urls cool app", language:"TypeScript", stars:1, issues:0, forks:0, pushed:"2026-06-06", size:1060, html_url:"https://github.com/Floridadoll1313/OTDAISURFER-", fork:false },
   { id:3, name:"Ocean-Tide-Drop-AI-SURFER-2", description:"Main OTD AI Surfer platform v2", language:"TypeScript", stars:0, issues:0, forks:0, pushed:"2026-06-06", size:5685, html_url:"https://github.com/Floridadoll1313/Ocean-Tide-Drop-AI-SURFER-2", fork:false },
